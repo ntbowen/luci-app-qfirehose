@@ -2,6 +2,8 @@
 
 A LuCI web interface for QFirehose (v1.4.17), providing a user-friendly way to flash Qualcomm firmware on Quectel modems via OpenWrt.
 
+https://github.com/user-attachments/assets/87e675bc-6890-46e1-b0c6-3b06ed4aaa6a
+
 ## Features
 
 - Modern custom DOM layout with LuCI theme compatibility
