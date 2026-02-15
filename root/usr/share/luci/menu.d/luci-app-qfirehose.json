@@ -1,0 +1,14 @@
+{
+    "admin/modem/qfirehose": {
+        "title": "QFirehose",
+        "order": 90,
+        "action": {
+            "type": "view",
+            "path": "qfirehose"
+        },
+        "depends": {
+            "acl": [ "luci-app-qfirehose" ],
+            "uci": [ "qfirehose" ]
+        }
+    }
+}

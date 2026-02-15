@@ -1,0 +1,37 @@
+{
+    "luci-app-qfirehose": {
+        "description": "Grant access to QFirehose configuration",
+        "read": {
+            "cgi-io": [ "upload" ],
+            "file": {
+                "/usr/bin/qfirehose": [ "exec" ],
+                "/usr/sbin/qfirehose-start": [ "exec" ],
+                "/usr/sbin/qfirehose-status": [ "exec" ],
+                "/usr/sbin/qfirehose-modem-info": [ "exec" ],
+                "/bin/cat": [ "exec" ],
+                "/bin/rm": [ "exec" ],
+                "/tmp/qfirehoseupload": [ "read", "write" ],
+                "/tmp/qfirehoseupload/*": [ "read", "write" ],
+                "/tmp/qfirehose_log": [ "read", "write" ],
+                "/tmp/qfirehose_log/*": [ "read", "write" ]
+            },
+            "ubus": {
+                "file": [ "read", "write", "exec", "stat", "list" ],
+                "system": [ "info" ]
+            },
+            "uci": [ "qfirehose" ]
+        },
+        "write": {
+            "cgi-io": [ "upload" ],
+            "file": {
+                "/tmp/qfirehoseupload": [ "write" ],
+                "/tmp/qfirehoseupload/*": [ "write" ],
+                "/tmp/qfirehose_log/*": [ "write" ]
+            },
+            "ubus": {
+                "file": [ "write", "exec", "list" ]
+            },
+            "uci": [ "qfirehose" ]
+        }
+    }
+}

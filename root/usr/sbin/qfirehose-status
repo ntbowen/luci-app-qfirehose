@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# QFirehose 状态查询脚本
+# 只返回状态字符串（不含日志），日志由前端直接 cat current.log 获取
+# 状态值：idle / flashing / completed / failed
+
+LOG_DIR="/tmp/qfirehose_log"
+status_file="$LOG_DIR/status"
+pid_file="$LOG_DIR/pid"
+log_file="$LOG_DIR/current.log"
+
+# 检查状态文件
+if [ ! -f "$status_file" ]; then
+    echo "idle"
+    exit 0
+fi
+
+status=$(cat "$status_file" 2>/dev/null)
+
+# 检查进程是否仍在运行
+if [ -f "$pid_file" ]; then
+    PID=$(cat "$pid_file" 2>/dev/null)
+    if [ -n "$PID" ] && kill -0 "$PID" 2>/dev/null; then
+        # 进程仍在运行
+        status="flashing"
+    elif [ "$status" = "flashing" ]; then
+        # 进程已退出但状态文件未更新（异常退出），检查日志判断结果
+        if [ -f "$log_file" ] && grep -q "Upgrade module successfully" "$log_file" 2>/dev/null; then
+            status="completed"
+        else
+            status="failed"
+        fi
+        echo "$status" > "$status_file"
+    fi
+fi
+
+# 输出纯文本状态（不用 JSON，避免转义问题）
+echo "$status"

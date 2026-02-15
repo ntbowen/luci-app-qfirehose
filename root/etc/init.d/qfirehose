@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+    mkdir -p /tmp/qfirehoseupload
+    mkdir -p /tmp/qfirehose_log
+}
+
+stop() {
+    rm -f /tmp/qfirehose_log/pid
+    rm -f /tmp/qfirehose_log/status
+}
