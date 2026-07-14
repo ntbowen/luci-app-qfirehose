@@ -1,25 +1,25 @@
 # LuCI QFirehose 应用
 
-QFirehose (v1.4.17) 的 LuCI 网页界面，为 OpenWrt 设备提供用户友好的移远（Quectel）模组高通固件烧写工具。
+QFirehose (v1.7.1) 的 LuCI 网页界面，为 OpenWrt 设备提供用户友好的移远（Quectel）模组高通固件烧写工具。
 
 ## 功能特点
 
 - 全新自定义 DOM 布局，完美兼容 LuCI 主题
 - 模组型号和当前固件版本显示（通过 AT 命令自动检测）
 - 固件上传进度条
-- 支持固件目录、`.zip` 和 `.7z` 压缩包（v1.4.17 内置解压）
+- 支持固件目录、`.zip` 和 `.7z` 压缩包（qfirehose v1.7.1 内置解压）
 - 自动 USB/PCIe 设备检测，支持一键刷新
 - 终端风格实时日志监控
 - 支持多个 USB 端口和设备
 - 存储类型选择（NAND/eMMC/UFS）
-- 可折叠高级选项：MD5 跳过、签名固件、USBMon 日志捕获、全擦除
+- 可折叠高级选项：MD5 跳过、签名固件、RNDIS 模式、USBMon 日志捕获、全擦除
 - 固件路径支持手动编辑
 - 烧写完成/失败后重置按钮
 - 自动完成/失败检测与状态指示
 
 ## 支持的模组
 
-QFirehose v1.4.17 支持众多移远模组，包括：
+QFirehose v1.7.1 支持众多移远模组，包括：
 
 - EC20、EC25、EG25、EG06、EM05、EM06、EM12、EM20
 - AG35、AG520R、AG525、AG550、AG590
@@ -32,23 +32,23 @@ QFirehose v1.4.17 支持众多移远模组，包括：
 
 - luci-base
 - cgi-io（固件文件上传）
-- qfirehose（v1.4.17，自动包含 unzip 和 p7zip 依赖）
+- qfirehose（v1.7.1，自动包含 unzip 和 p7zip 依赖）
 - socat（AT 命令通信，获取模组信息）
 
 ## 安装方法
 
 1. 将此仓库添加到您的 OpenWrt 构建系统中
 
-2. 编译软件包：
+1. 编译软件包：
 
 ```bash
 make package/luci-app-qfirehose/compile V=s
 ```
 
-3. 在您的 OpenWrt 设备上安装生成的软件包：
+1. 在您的 OpenWrt 设备上安装生成的软件包：
 
 ```bash
-opkg install luci-app-qfirehose_2.1.0_all.ipk
+opkg install luci-app-qfirehose_2.1.1_all.ipk
 ```
 
 ## 使用方法
@@ -61,6 +61,12 @@ opkg install luci-app-qfirehose_2.1.0_all.ipk
 6. 通过日志窗口监控进度
 
 ## 更新日志
+
+### v2.1.1
+
+- **QFirehose v1.7.1**：后端 qfirehose 从 v1.4.17 升级到 v1.7.1
+- **RNDIS 模式**：高级选项新增 `-r` 参数，支持从 ECM 切换到 RNDIS 模式（适用于兼容模组）
+- **i18n**：补充新增 RNDIS 选项的中文（zh-Hans）翻译
 
 ### v2.1.0 (2026-02-15)
 

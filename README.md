@@ -1,27 +1,27 @@
 # LuCI QFirehose Application
 
-A LuCI web interface for QFirehose (v1.4.17), providing a user-friendly way to flash Qualcomm firmware on Quectel modems via OpenWrt.
+A LuCI web interface for QFirehose (v1.7.1), providing a user-friendly way to flash Qualcomm firmware on Quectel modems via OpenWrt.
 
-https://pcat.qsim.top/readme/Luci-app-qfirehose%202.1.0.MP4
+Demo video: <https://pcat.qsim.top/readme/Luci-app-qfirehose%202.1.0.MP4>
 
 ## Features
 
 - Modern custom DOM layout with LuCI theme compatibility
 - Modem model and current firmware display (via AT commands)
 - Firmware upload with progress bar
-- Supports firmware directory, `.zip` and `.7z` packages (built-in decompression in v1.4.17)
+- Supports firmware directory, `.zip` and `.7z` packages (built-in decompression in qfirehose v1.7.1)
 - Automatic USB/PCIe device detection with refresh button
 - Real-time log monitoring (terminal-style dark theme)
 - Support for multiple USB ports and devices
 - Device type selection (NAND/eMMC/UFS)
-- Collapsible advanced options: MD5 skip, signed firmware, USBMon log capture, full erase
+- Collapsible advanced options: MD5 skip, signed firmware, RNDIS mode, USBMon log capture, full erase
 - Editable firmware path for manual input
 - Reset button for clearing state after flash
 - Automatic completion/failure detection with status indicator
 
 ## Supported Modules
 
-QFirehose v1.4.17 supports a wide range of Quectel modules including:
+QFirehose v1.7.1 supports a wide range of Quectel modules including:
 
 - EC20, EC25, EG25, EG06, EM05, EM06, EM12, EM20
 - AG35, AG520R, AG525, AG550, AG590
@@ -34,23 +34,23 @@ QFirehose v1.4.17 supports a wide range of Quectel modules including:
 
 - luci-base
 - cgi-io (firmware upload)
-- qfirehose (v1.4.17, includes unzip and p7zip dependencies)
+- qfirehose (v1.7.1, includes unzip and p7zip dependencies)
 - socat (AT command communication for modem info)
 
 ## Installation
 
 1. Add this repository to your OpenWrt build system
 
-2. Build the package:
+1. Build the package:
 
 ```bash
 make package/luci-app-qfirehose/compile V=s
 ```
 
-3. Install the generated package on your OpenWrt device:
+1. Install the generated package on your OpenWrt device:
 
 ```bash
-opkg install luci-app-qfirehose_2.0.0_all.ipk
+opkg install luci-app-qfirehose_2.1.1_all.ipk
 ```
 
 ## Usage
@@ -63,6 +63,12 @@ opkg install luci-app-qfirehose_2.0.0_all.ipk
 6. Monitor the progress through the log window
 
 ## Changelog
+
+### v2.1.1
+
+- **QFirehose v1.7.1**: Upgraded QFirehose backend from v1.4.17 to v1.7.1
+- **RNDIS Mode**: Added advanced option `-r` to switch from ECM to RNDIS mode for compatible modules
+- **i18n**: Updated Chinese (zh-Hans) translations for the new RNDIS option
 
 ### v2.1.0 (2026-02-15)
 
