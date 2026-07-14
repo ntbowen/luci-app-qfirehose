@@ -1,5 +1,7 @@
 # LuCI QFirehose Application
 
+[简体中文](README_zh.md)
+
 A LuCI web interface for QFirehose (v1.7.1), providing a user-friendly way to flash Qualcomm firmware on Quectel modems via OpenWrt.
 
 Demo video: <https://pcat.qsim.top/readme/Luci-app-qfirehose%202.1.0.MP4>
@@ -64,7 +66,7 @@ opkg install luci-app-qfirehose_2.1.1_all.ipk
 
 ## Changelog
 
-### v2.1.1
+### v2.1.1 (2026-07-15)
 
 - **QFirehose v1.7.1**: Upgraded QFirehose backend from v1.4.17 to v1.7.1
 - **RNDIS Mode**: Added advanced option `-r` to switch from ECM to RNDIS mode for compatible modules

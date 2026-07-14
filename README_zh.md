@@ -62,7 +62,7 @@ opkg install luci-app-qfirehose_2.1.1_all.ipk
 
 ## 更新日志
 
-### v2.1.1
+### v2.1.1 (2026-07-15)
 
 - **QFirehose v1.7.1**：后端 qfirehose 从 v1.4.17 升级到 v1.7.1
 - **RNDIS 模式**：高级选项新增 `-r` 参数，支持从 ECM 切换到 RNDIS 模式（适用于兼容模组）
