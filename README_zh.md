@@ -60,7 +60,22 @@ opkg install luci-app-qfirehose_2.1.1_all.ipk
 5. 点击"开始烧写"
 6. 通过日志窗口监控进度
 
+### EDL 保护与烧录中断恢复
+
+模组进入 EDL（`05c6:9008`）后，PBL 只发送一次 Sahara hello 并等待响应；任何向 `ttyUSB0` 发送 AT 命令的探测进程（如 qmodem 的 `modem_scand`、`ubus-at-daemon`）都会使 PBL 进入错误状态，之后只能给模组断电重来。本应用内置两层保护：
+
+- `qfirehose-start` 在烧录前停止 `qmodem_init` / `qmodem_monitor` / `ubus-at-daemon`，烧录结束后恢复
+- `/etc/hotplug.d/usb/05-qfirehose-edl-guard` 在 `9008` 设备出现的瞬间停止上述服务、消失时恢复，覆盖开机即处于 EDL 的场景
+
+若烧录中途中断（断电、进程崩溃），模组分区已被擦除、只能以 EDL 模式启动。此时**给模组断电一次**（通常重启路由器即可），等 `lsusb` 出现 `05c6:9008` 后直接在 LuCI 中重新烧录即可；hotplug 保护会阻止探测进程干扰。日志中若出现 `Target is in sahara error state` 或 `Target is already in firehose mode`，说明 PBL 状态已脏，需再断电一次。
+
 ## 更新日志
+
+### v2.1.1-r2 / qfirehose 1.7.1-r6 (2026-09-05)
+
+- **修复 SIGTRAP 崩溃**：`unzip_fopen()` 剪除 `/firehose/..` 时使用重叠的 `memcpy`，OpenWrt fortify-headers 检测到重叠即 `__builtin_trap()`；剩余文件名超过 12 字节（如 `devcfg_low_ddr.mbn`）必崩，导致模组变砖。改为 `memmove`
+- **Sahara 握手加固**：hello 丢失时盲发 hello response；识别 `END_IMAGE_TX` 错误态、reset 应答、Firehose 已在运行等情况并给出明确提示；移除会让 SDX62 PBL 进入错误态的 dummy 字节探测
+- **EDL 保护**：烧录期间及 `9008` 设备存在期间自动停止 modem 端口探测服务，详见上文
 
 ### v2.1.1 (2026-07-15)
 
