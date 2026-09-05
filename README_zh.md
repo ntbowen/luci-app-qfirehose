@@ -62,14 +62,22 @@ opkg install luci-app-qfirehose_2.1.1_all.ipk
 
 ### EDL 保护与烧录中断恢复
 
-模组进入 EDL（`05c6:9008`）后，PBL 只发送一次 Sahara hello 并等待响应；任何向 `ttyUSB0` 发送 AT 命令的探测进程（如 qmodem 的 `modem_scand`、`ubus-at-daemon`）都会使 PBL 进入错误状态，之后只能给模组断电重来。本应用内置两层保护：
+模组进入 EDL（`05c6:9008`）后，PBL 只发送一次 Sahara hello 并等待响应；任何向 `ttyUSB0` 发送 AT 命令的探测进程（如 qmodem 的 `modem_scand`、`ubus-at-daemon`）都会使 PBL 进入错误状态，之后只能给模组断电重来。本应用的保护机制（`/usr/sbin/qfirehose-edl-guard`）：
 
-- `qfirehose-start` 在烧录前停止 `qmodem_init` / `qmodem_monitor` / `ubus-at-daemon`，烧录结束后恢复
-- `/etc/hotplug.d/usb/05-qfirehose-edl-guard` 在 `9008` 设备出现的瞬间停止上述服务、消失时恢复，覆盖开机即处于 EDL 的场景
+- **通用保护（与系统中跑什么程序无关）**：用户态程序接触 PBL 的唯一途径是内核驱动 `qcserial` 创建的 `/dev/ttyUSB*`。`/etc/hotplug.d/usb/05-qfirehose-edl-guard` 在 `9008` 接口被内核驱动绑定的瞬间将其解绑，系统中不会存在对应的 tty 节点，任何已知或未知的探测程序都无从下手。qfirehose 自身通过 usbfs（`/dev/bus/usb/...`）直接访问设备，不需要 tty，不受影响。模组处于正常模式（`2c7c:xxxx`）时该机制不会触发，系统其余功能不受影响。
+- **辅助保护**：同时停止已知的探测服务（默认 `qmodem_init qmodem_monitor ubus-at-daemon`，可通过 `uci set qfirehose.config.edl_guard_services='...'` 自定义），`9008` 设备消失后自动恢复。
+- `qfirehose-start` 在烧录开始时也会执行一次上述动作，覆盖 hotplug 尚未安装时的模组已在 EDL 的场景。
+
+验证保护是否生效：模组处于 `9008` 时 `ls /dev/ttyUSB*` 应不存在对应节点，`logread | grep qfirehose-edl-guard` 可看到 `detached driver qcserial ...`。
 
 若烧录中途中断（断电、进程崩溃），模组分区已被擦除、只能以 EDL 模式启动。此时**给模组断电一次**（通常重启路由器即可），等 `lsusb` 出现 `05c6:9008` 后直接在 LuCI 中重新烧录即可；hotplug 保护会阻止探测进程干扰。日志中若出现 `Target is in sahara error state` 或 `Target is already in firehose mode`，说明 PBL 状态已脏，需再断电一次。
 
 ## 更新日志
+
+### v2.1.2 (2026-09-05)
+
+- **通用 EDL 保护**：新增 `/usr/sbin/qfirehose-edl-guard`，在 `05c6:9008` 接口被内核驱动绑定时立即解绑，从根上消除 tty 节点，不再依赖“已知探测程序列表”
+- 探测服务列表改为 UCI 可配置（`qfirehose.config.edl_guard_services`）
 
 ### v2.1.1-r2 / qfirehose 1.7.1-r6 (2026-09-05)
 
